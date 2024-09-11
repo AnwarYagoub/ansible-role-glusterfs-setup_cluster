@@ -1,0 +1,16 @@
+- name: Converge
+  hosts: all
+  gather_facts: false
+  strategy: linear
+  tasks:
+
+    - name: Setup
+      ansible.builtin.setup:
+        gather_subset:
+          - '!all'
+          - '!min'
+          - 'distribution'
+
+    - name: Include anwaryagoub.glusterfs role
+      ansible.builtin.include_role:
+        name: anwaryagoub.glusterfs_setup_cluster

@@ -1,0 +1,53 @@
+---
+
+- name: Create a trusted storage pool
+  gluster.gluster.gluster_peer:
+    nodes:
+      - node-2.glusterfs.lab
+      - node-3.glusterfs.lab
+    state: present
+  when: inventory_hostname == "node-1.glusterfs.lab"
+  run_once: true
+  # noqa: run-once
+
+- name: Create directory to be used for glusterfs volume
+  block:
+    - name: Create directory to be used for glusterfs volume | Check directory stats
+      ansible.builtin.stat:
+        path: /glusterfs/volumes/gv1
+      register: dir_glusterfs_volumes_gv1
+    - name: Create directory to be used for glusterfs volume | Create directory if not already exists
+      ansible.builtin.file:
+        path: /glusterfs/volumes/gv1
+        recurse: true
+        state: directory
+      when: not dir_glusterfs_volumes_gv1.stat.exists
+
+- name: Create GlusterFS volume
+  gluster.gluster.gluster_volume:
+    name: gv1
+    replicas: 3
+    cluster:
+      - node-1.glusterfs.lab
+      - node-2.glusterfs.lab
+      - node-3.glusterfs.lab
+    bricks: /glusterfs/volumes/gv1
+    force: true
+    state: present
+  when: inventory_hostname == "node-1.glusterfs.lab"
+  run_once: true
+  # noqa: run-once
+
+- name: Mounting a GlusterFS volume
+  block:
+    - name: Mounting a GlusterFS volume | Create directory to be used as mount point for glusterfs volume
+      ansible.builtin.file:
+        path: /mnt/gv1
+        recurse: true
+        state: directory
+    - name: Mounting a GlusterFS volume | Add mount point in /etc/fstab for glusterfs volume & mount it
+      ansible.posix.mount:
+        src: localhost:gv1
+        path: /mnt/gv1
+        fstype: glusterfs
+        state: mounted

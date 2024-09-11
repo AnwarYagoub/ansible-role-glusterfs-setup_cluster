@@ -1,0 +1,32 @@
+dependencies:
+  - anwaryagoub.glusterfs
+
+galaxy_info:
+  role_name: glusterfs_setup_cluster
+  namespace: anwaryagoub
+  author: Anwar Yagoub
+  description: Setup a GlusterFS cluster in Linux
+  company: N/A
+  license: license (BSD, MIT)
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - noble
+    - name: Debian
+      versions:
+        - bookworm
+    - name: Rocky
+      versions:
+        - "9.4"
+
+  galaxy_tags:
+    - system
+    - networking
+    - cloud
+    - clustering
+    - files
+    - sharing
+    - gluster
+    - glusterfs
