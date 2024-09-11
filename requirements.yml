@@ -1,3 +1,7 @@
 roles:
   - name: AnwarYagoub.glusterfs
     version: v1.0.0
+
+collections:
+  - name: gluster.gluster
+    version: 1.0.2
