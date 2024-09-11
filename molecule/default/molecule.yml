@@ -1,6 +1,9 @@
 role_name_check: 1
 dependency:
   name: galaxy
+  options:
+    role-file: requirements.yml  # This is the default, but can be specified explicitly
+    # force: true  # Ensures roles are installed even if they are already present
 driver:
   name: docker
 platforms:
