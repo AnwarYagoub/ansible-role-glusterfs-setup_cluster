@@ -1,9 +1,9 @@
 dependencies:
-  - anwaryagoub.glusterfs
+  - AnwarYagoub.glusterfs
 
 galaxy_info:
   role_name: glusterfs_setup_cluster
-  namespace: anwaryagoub
+  namespace: AnwarYagoub
   author: Anwar Yagoub
   description: Setup a GlusterFS cluster in Linux
   company: N/A
