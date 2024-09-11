@@ -8,7 +8,7 @@ galaxy_info:
   role_name: glusterfs_setup_cluster
   namespace: AnwarYagoub
   author: Anwar Yagoub
-  description: Setup a GlusterFS cluster in Linux
+  description: Set up a GlusterFS cluster on Linux servers
   company: N/A
   license: license (BSD, MIT)
   min_ansible_version: "2.10"
