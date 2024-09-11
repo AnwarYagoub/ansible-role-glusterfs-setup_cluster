@@ -1,0 +1,28 @@
+- name: Verify
+  hosts: all
+  gather_facts: false
+  become: true
+  vars:
+    gluster_servers:
+      - node-1.glusterfs.lab
+      - node-2.glusterfs.lab
+      - node-3.glusterfs.lab
+  tasks:
+
+    - name: Set required facts
+      ansible.builtin.set_fact:
+        glusterfs_first_peer: "{{ gluster_servers[0] }}"
+        glusterfs_other_peers_count: "{{ gluster_servers[1:] | length }}"
+
+    - name: Check GlusterFS peers status
+      ansible.builtin.shell:
+        cmd: gluster peer status | grep -i 'Peer in Cluster (Connected)' | wc -l
+      register: gluster_peer_status
+      ignore_errors: true
+      changed_when: false
+      when: inventory_hostname == glusterfs_first_peer
+
+    - name: Validated number of connected peers
+      ansible.builtin.assert:
+        that: (gluster_peer_status.stdout | int) == (glusterfs_other_peers_count | int)
+      when: inventory_hostname == glusterfs_first_peer
