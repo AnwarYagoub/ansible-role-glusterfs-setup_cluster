@@ -1,0 +1,8 @@
+---
+
+gluster_servers: []
+
+create_replicated_test_volume: false
+gluster_volume_name: gv1
+gluster_volume_brick_path: /glusterfs/volumes/gv1
+gluster_volume_mount_point: /mnt/gv1

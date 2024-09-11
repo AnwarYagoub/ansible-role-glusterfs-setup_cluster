@@ -2,6 +2,11 @@
   hosts: all
   gather_facts: false
   strategy: linear
+  vars:
+    gluster_servers:
+      - node-1.glusterfs.lab
+      - node-2.glusterfs.lab
+      - node-3.glusterfs.lab
   tasks:
 
     - name: Setup

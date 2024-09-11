@@ -1,53 +1,65 @@
 ---
 
+- name: Check required variable
+  ansible.builtin.assert:
+    that:
+      - gluster_servers is defined
+      - gluster_servers | length >= 2
+    fail_msg: "gluster_servers variable must be set as a list of 2 or more FQDNs"
+
+- name: Create list of GlusterFS peers
+  ansible.builtin.set_fact:
+    glusterfs_first_peer: "{{ gluster_servers[0] }}"
+    glusterfs_other_peers: "{{ gluster_servers[1:] }}"
+    gluster_servers_count: "{{ gluster_servers | length }}"
+
 - name: Create a trusted storage pool
   gluster.gluster.gluster_peer:
-    nodes:
-      - node-2.glusterfs.lab
-      - node-3.glusterfs.lab
+    nodes: "{{ glusterfs_other_peers }}"
     state: present
-  when: inventory_hostname == "node-1.glusterfs.lab"
+  when: inventory_hostname == glusterfs_first_peer
   run_once: true
   # noqa: run-once
 
 - name: Create directory to be used for glusterfs volume
+  when: create_replicated_test_volume
   block:
     - name: Create directory to be used for glusterfs volume | Check directory stats
       ansible.builtin.stat:
-        path: /glusterfs/volumes/gv1
+        path: "{{ gluster_volume_brick_path }}"
       register: dir_glusterfs_volumes_gv1
     - name: Create directory to be used for glusterfs volume | Create directory if not already exists
       ansible.builtin.file:
-        path: /glusterfs/volumes/gv1
+        path: "{{ gluster_volume_brick_path }}"
         recurse: true
         state: directory
       when: not dir_glusterfs_volumes_gv1.stat.exists
 
 - name: Create GlusterFS volume
   gluster.gluster.gluster_volume:
-    name: gv1
-    replicas: 3
-    cluster:
-      - node-1.glusterfs.lab
-      - node-2.glusterfs.lab
-      - node-3.glusterfs.lab
-    bricks: /glusterfs/volumes/gv1
-    force: true
+    name: "{{ gluster_volume_name }}"
+    replicas: "{{ gluster_servers_count }}"
+    cluster: "{{ gluster_servers }}"
+    bricks: "{{ gluster_volume_brick_path }}"
+    force: true # forcing volume creation since we are creating it on OS partition
     state: present
-  when: inventory_hostname == "node-1.glusterfs.lab"
+  when:
+    - inventory_hostname == glusterfs_first_peer
+    - create_replicated_test_volume
   run_once: true
   # noqa: run-once
 
 - name: Mounting a GlusterFS volume
+  when: create_replicated_test_volume
   block:
     - name: Mounting a GlusterFS volume | Create directory to be used as mount point for glusterfs volume
       ansible.builtin.file:
-        path: /mnt/gv1
+        path: "{{ gluster_volume_mount_point }}"
         recurse: true
         state: directory
     - name: Mounting a GlusterFS volume | Add mount point in /etc/fstab for glusterfs volume & mount it
       ansible.posix.mount:
-        src: localhost:gv1
-        path: /mnt/gv1
+        src: "localhost:{{ gluster_volume_name }}"
+        path: "{{ gluster_volume_mount_point }}"
         fstype: glusterfs
         state: mounted
