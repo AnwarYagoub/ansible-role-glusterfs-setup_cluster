@@ -1,6 +1,9 @@
 dependencies:
   - AnwarYagoub.glusterfs
 
+collections:
+  - gluster.gluster
+
 galaxy_info:
   role_name: glusterfs_setup_cluster
   namespace: AnwarYagoub
