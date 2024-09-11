@@ -1,4 +1,3 @@
 roles:
-  - name: anwaryagoub.glusterfs_setup_cluster
-    src: https://github.com/AnwarYagoub/ansible-role-glusterfs.git
-    version: main
+  - name: AnwarYagoub.glusterfs
+    version: v1.0.0

@@ -55,7 +55,6 @@ jobs:
       - name: Install dependencies.
         run: ansible-galaxy install -r requirements.yml
 
-
   molecule:
     name: Molecule
     runs-on: ubuntu-latest
