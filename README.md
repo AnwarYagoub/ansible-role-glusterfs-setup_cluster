@@ -44,9 +44,9 @@ Including an example of how to use your role (for instance, with variables passe
               - '!min'
               - 'distribution'
 
-        - name: Include anwaryagoub.glusterfs role
+        - name: Include AnwarYagoub.glusterfs role
           ansible.builtin.include_role:
-            name: anwaryagoub.glusterfs_setup_cluster
+            name: AnwarYagoub.glusterfs_setup_cluster
 
 License
 -------
